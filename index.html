@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Special Memories</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            background: #0d0d0d; 
+            color: #fff; 
+            font-family: Arial, sans-serif; 
+            text-align: center; 
+            overflow-x: hidden;
+            min-height: 100vh;
+            scroll-behavior: smooth; /* Smooth scrolling add kiya */
+        }
+        
+        .screen { 
+            display: none; 
+            min-height: 100vh; 
+            padding: 20px;
+            animation: fadeIn 1s ease-in;
+        }
+        .active { display: flex !important; flex-direction: column; justify-content: center; align-items: center; }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        button {
+            background: #ff69b4;
+            color: black;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-weight: bold;
+            font-size: 18px;
+            cursor: pointer;
+            box-shadow: 0 0 15px #ff69b4;
+            transition: 0.3s;
+        }
+        button:hover { transform: scale(1.05); }
+
+        /* Screen 1: Welcome */
+        #welcome h1 {
+            font-size: 3rem;
+            color: #ff69b4;
+            margin-bottom: 40px;
+            animation: fadeIn 2s ease-in;
+        }
+        
+        /* Screen 2: Dial Pad */
+        .dial-container {
+            background: #1a1a1a;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 0 25px #ff69b4;
+            width: 90%;
+            max-width: 350px;
+        }
+        #pinDisplay {
+            background: #333;
+            color: #ff69b4;
+            border: 2px solid #ff69b4;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 28px;
+            text-align: center;
+            width: 100%;
+            margin-bottom: 20px;
+            letter-spacing: 10px;
+        }
+        .dial-pad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+        .dial-btn {
+            background: #333;
+            color: #ff69b4;
+            border: 2px solid #ff69b4;
+            border-radius: 50%;
+            width: 70px;
+            height: 70px;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .dial-btn:active { background: #ff69b4; color: black; }
+        #error { color: #ff4444; margin-top: 15px; display: none; }
+
+        /* Loading Screens */
+        .loading-text { font-size: 24px; color: #ff69b4; margin-bottom: 20px; }
+        .loading-bar { width: 80%; max-width: 400px; background: #333; height: 12px; border-radius: 6px; }
+        .progress { width: 0%; background: #ff69b4; height: 100%; border-radius: 6px; animation: load 2.5s forwards; }
+        @keyframes load { to { width: 100%; } }
+
+        /* Screen 4: Memories Gallery - GRID LAYOUT */
+        #gallery-screen { padding: 20px; justify-content: flex-start; padding-top: 40px; }
+        #gallery-screen h2 { color: #ff69b4; font-size: 2.5rem; margin: 0 0 20px; }
+        .gallery-container { 
+            display: grid; 
+            grid-template-columns: repeat(2, 1fr); 
+            gap: 15px; 
+            max-width: 600px; 
+            margin: 0 auto 20px;
+        }
+        .card { 
+            background: #1a1a1a; 
+            border: 2px solid #ff69b4; 
+            border-radius: 15px; 
+            padding: 10px; 
+            box-shadow: 0 0 15px #ff69b4; 
+            opacity: 0; 
+            transform: scale(0.8); 
+            transition: all 0.6s ease-in-out; 
+        }
+        .card img { width: 100%; height: 200px; border-radius: 10px; object-fit: cover; }
+        .card.show { opacity: 1; transform: scale(1); }
+        #nextBtn { display: none; margin: 10px auto 30px; }
+
+        /* Screen 6: Hearts + Message */
+        #hearts-bg {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            overflow: hidden;
+            z-index: -1;
+        }
+        .heart {
+            position: absolute;
+            font-size: 20px;
+            animation: float 6s infinite ease-in;
+            opacity: 0;
+        }
+        @keyframes float {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+        }
+        #messageBox {
+            background: rgba(26, 26, 26, 0.9);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 0 25px #ff69b4;
+            max-width: 90%;
+            width: 500px;
+            z-index: 10;
+        }
+        #typedMessage {
+            font-size: 20px;
+            color: #ff69b4;
+            text-align: left;
+            min-height: 150px;
+            line-height: 1.6;
+        }
+        .typing::after {
+            content: '|';
+            animation: blink 1s infinite;
+        }
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+        
+        /* NEW EMOJI HEART BUTTON */
+        #heartBtnContainer {
+            display: none;
+            margin-top: 30px;
+        }
+        #heartBtn {
+            background: none;
+            border: none;
+            font-size: 60px;
+            cursor: pointer;
+            animation: spin 2s linear infinite;
+            filter: drop-shadow(0 0 10px #ff1744);
+            padding: 0;
+            box-shadow: none;
+        }
+        #heartBtn:hover {
+            transform: scale(1.2);
+        }
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        #heartBtnText {
+            color: #ff69b4;
+            font-size: 16px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        /* Final Screen */
+        #final-screen h1 {
+            font-size: 2.5rem;
+            color: #ff69b4;
+            animation: fadeIn 2s ease-in;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Screen 1: Welcome -->
+    <div id="welcome" class="screen active">
+        <h1>Welcome ✨</h1>
+        <button onclick="showScreen('dial-screen')">Click Here</button>
+    </div>
+
+    <!-- Screen 2: Dial Pad -->
+    <div id="dial-screen" class="screen">
+        <div class="dial-container">
+            <h2 style="color: #ff69b4; margin-bottom: 20px;">🔒 Secret Code</h2>
+            <input type="password" id="pinDisplay" placeholder="____" maxlength="4" readonly>
+            <div class="dial-pad">
+                <button class="dial-btn" onclick="addDigit('1')">1</button>
+                <button class="dial-btn" onclick="addDigit('2')">2</button>
+                <button class="dial-btn" onclick="addDigit('3')">3</button>
+                <button class="dial-btn" onclick="addDigit('4')">4</button>
+                <button class="dial-btn" onclick="addDigit('5')">5</button>
+                <button class="dial-btn" onclick="addDigit('6')">6</button>
+                <button class="dial-btn" onclick="addDigit('7')">7</button>
+                <button class="dial-btn" onclick="addDigit('8')">8</button>
+                <button class="dial-btn" onclick="addDigit('9')">9</button>
+                <button class="dial-btn" onclick="clearPin()">C</button>
+                <button class="dial-btn" onclick="addDigit('0')">0</button>
+                <button class="dial-btn" onclick="checkCode()">✓</button>
+            </div>
+            <p id="error">Ghalat Code! Dobara koshish karein.</p>
+        </div>
+    </div>
+
+    <!-- Screen 3: Loading Memories -->
+    <div id="loading-memories" class="screen">
+        <div class="loading-text">Loading Memories...</div>
+        <div class="loading-bar"><div class="progress"></div></div>
+    </div>
+
+    <!-- Screen 4: Gallery -->
+    <div id="gallery-screen" class="screen">
+        <h2>Memories</h2>
+        <div class="gallery-container" id="gallery-content"></div>
+        <button id="nextBtn" onclick="showScreen('loading-message')">Next</button>
+    </div>
+
+    <!-- Screen 5: Loading Message -->
+    <div id="loading-message" class="screen">
+        <div class="loading-text">Loading Message...</div>
+        <div class="loading-bar"><div class="progress"></div></div>
+    </div>
+
+    <!-- Screen 6: Hearts + Typed Message -->
+    <div id="message-screen" class="screen">
+        <div id="hearts-bg"></div>
+        <div id="messageBox">
+            <div id="typedMessage"></div>
+            <div id="heartBtnContainer">
+                <button id="heartBtn" onclick="showScreen('final-screen')">❤️</button>
+                <div id="heartBtnText">Press the Heart</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Screen 7: Final -->
+    <div id="final-screen" class="screen">
+        <h1>Thanks for Watching 😊</h1>
+    </div>
+
+    <script>
+        let currentPin = '';
+        const correctCode = '1806';
+        
+        const items = [
+            { img: "pic3.jpg" },
+            { img: "pic2.jpg" },
+            { img: "pic1.jpg" },
+            { img: "pic4.jpg" },
+            { img: "pic5.jpg" },
+            { img: "pic6.jpg" },
+            { img: "pic7.jpg" },
+            { img: "pic8.jpg" }
+        ];
+
+        // ⚡ APNA MESSAGE YAHAN CHANGE KARO ⚡
+        const finalMessage = `You are My Favorite Person ♥️. You are so precious 💎. I love you more than your thoughts.No matter what, you will always be my favorite person 🔒❤️. A thousand times over, you will always hold a special place in my heart 🥺🌹💞`;
+
+        function showScreen(id) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            
+            if (id === 'loading-memories') {
+                setTimeout(() => {
+                    showScreen('gallery-screen');
+                    buildGallery();
+                }, 2500);
+            }
+            if (id === 'loading-message') {
+                setTimeout(() => {
+                    showScreen('message-screen');
+                    startHeartsAndMessage();
+                }, 2500);
+            }
+        }
+
+        function addDigit(num) {
+            if (currentPin.length < 4) {
+                currentPin += num;
+                document.getElementById('pinDisplay').value = currentPin;
+                document.getElementById('error').style.display = 'none';
+            }
+        }
+
+        function clearPin() {
+            currentPin = '';
+            document.getElementById('pinDisplay').value = '';
+        }
+
+        function checkCode() {
+            if (currentPin === correctCode) {
+                showScreen('loading-memories');
+            } else {
+                document.getElementById('error').style.display = 'block';
+                clearPin();
+            }
+        }
+
+        function typeWriter(element, text, speed = 50, callback) {
+            let i = 0;
+            element.classList.add('typing');
+            element.innerHTML = '';
+            
+            function typing() {
+                if (i < text.length) {
+                    element.innerHTML += text.charAt(i);
+                    i++;
+                    setTimeout(typing, speed);
+                } else {
+                    element.classList.remove('typing');
+                    if (callback) callback();
+                }
+            }
+            typing();
+        }
+
+        function buildGallery() {
+            let container = document.getElementById('gallery-content');
+            container.innerHTML = '';
+            
+            items.forEach((item, index) => {
+                let cardDiv = document.createElement('div');
+                cardDiv.className = 'card';
+                cardDiv.innerHTML = `<img src="${item.img}" alt="Photo">`;
+                
+                container.appendChild(cardDiv);
+                
+                setTimeout(() => {
+                    cardDiv.classList.add('show');
+                    
+                    // AUTO SCROLL - Har card show hone par neeche scroll ho
+                    setTimeout(() => {
+                        cardDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }, 100);
+                    
+                    if (index === items.length - 1) {
+                        setTimeout(() => {
+                            document.getElementById('nextBtn').style.display = 'block';
+                            document.getElementById('nextBtn').scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        }, 500);
+                    }
+                }, index * 800); // Thoda slow kiya taake scroll smooth lage
+            });
+        }
+
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.className = 'heart';
+            heart.innerHTML = '♥';
+            heart.style.left = Math.random() * 100 + '%';
+            heart.style.animationDuration = (Math.random() * 3 + 3) + 's';
+            heart.style.fontSize = (Math.random() * 15 + 20) + 'px';
+            
+            const colors = ['#ff1744', '#ff69b4', '#ff4081', '#e91e63', '#ff5252', '#9c27b0', '#673ab7', '#ff00ff', '#00bcd4', '#ffc107'];
+            heart.style.color = colors[Math.floor(Math.random() * colors.length)];
+            
+            document.getElementById('hearts-bg').appendChild(heart);
+            setTimeout(() => heart.remove(), 6000);
+        }
+
+        function startHeartsAndMessage() {
+            const heartInterval = setInterval(createHeart, 150);
+            
+            setTimeout(() => {
+                typeWriter(document.getElementById('typedMessage'), finalMessage, 45, () => {
+                    document.getElementById('heartBtnContainer').style.display = 'block';
+                });
+            }, 500);
+        }
+    </script>
+
+</body>
+</html>
