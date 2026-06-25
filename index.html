@@ -2,60 +2,68 @@
 <html>
 <head>
     <title>Special Memories</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { 
-            background: #0d0d0d; 
-            color: #fff; 
-            font-family: Arial, sans-serif; 
-            text-align: center; 
+        body {
+            background: #0d0d0d;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            text-align: center;
             overflow-x: hidden;
             min-height: 100vh;
-            scroll-behavior: smooth; /* Smooth scrolling add kiya */
+            scroll-behavior: smooth;
         }
-        
-        .screen { 
-            display: none; 
-            min-height: 100vh; 
+
+        .screen {
+            display: none;
+            min-height: 100vh;
             padding: 20px;
             animation: fadeIn 1s ease-in;
         }
-        .active { display: flex !important; flex-direction: column; justify-content: center; align-items: center; }
-        
+        .active { display: flex!important; flex-direction: column; justify-content: center; align-items: center; }
+
         @keyframes fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
         }
-        
+
         button {
-            background: #ff69b4;
-            color: black;
-            border: none;
+            background: linear-gradient(135deg, #e91e63, #ffffff, #e91e63);
+            color: #000;
+            border: 2px solid #e91e63;
             padding: 12px 30px;
             border-radius: 25px;
             font-weight: bold;
             font-size: 18px;
             cursor: pointer;
-            box-shadow: 0 0 15px #ff69b4;
+            box-shadow: 0 0 15px #e91e63;
             transition: 0.3s;
+            text-shadow: 0 0 5px rgba(255,255,255,0.8);
         }
         button:hover { transform: scale(1.05); }
 
-        /* Screen 1: Welcome */
         #welcome h1 {
-            font-size: 3rem;
-            color: #ff69b4;
-            margin-bottom: 40px;
+            font-size: 3.8rem;
+            background: linear-gradient(135deg, #ffffff, #ffb3c6, #ffffff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 15px rgba(255, 179, 198, 0.5);
+            margin-bottom: 25px;
             animation: fadeIn 2s ease-in;
         }
-        
-        /* Screen 2: Dial Pad */
+
+        #welcome h1 .emoji {
+            -webkit-text-fill-color: initial!important;
+            background: none!important;
+            color: initial!important;
+        }
+
         .dial-container {
             background: #1a1a1a;
             padding: 30px;
             border-radius: 20px;
-            box-shadow: 0 0 25px #ff69b4;
+            box-shadow: none;
             width: 90%;
             max-width: 350px;
         }
@@ -78,7 +86,10 @@
         }
         .dial-btn {
             background: #333;
-            color: #ff69b4;
+            background: linear-gradient(135deg, #ffffff, #ffb3c6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
             border: 2px solid #ff69b4;
             border-radius: 50%;
             width: 70px;
@@ -87,41 +98,60 @@
             font-weight: bold;
             cursor: pointer;
             transition: 0.2s;
+            box-shadow: none;
         }
-        .dial-btn:active { background: #ff69b4; color: black; }
+        .dial-btn:active {
+            background: #ff69b4;
+            -webkit-text-fill-color: #000;
+            color: black;
+        }
         #error { color: #ff4444; margin-top: 15px; display: none; }
 
-        /* Loading Screens */
         .loading-text { font-size: 24px; color: #ff69b4; margin-bottom: 20px; }
         .loading-bar { width: 80%; max-width: 400px; background: #333; height: 12px; border-radius: 6px; }
         .progress { width: 0%; background: #ff69b4; height: 100%; border-radius: 6px; animation: load 2.5s forwards; }
         @keyframes load { to { width: 100%; } }
 
-        /* Screen 4: Memories Gallery - GRID LAYOUT */
         #gallery-screen { padding: 20px; justify-content: flex-start; padding-top: 40px; }
-        #gallery-screen h2 { color: #ff69b4; font-size: 2.5rem; margin: 0 0 20px; }
-        .gallery-container { 
-            display: grid; 
-            grid-template-columns: repeat(2, 1fr); 
-            gap: 15px; 
-            max-width: 600px; 
+        #gallery-screen h2 {
+            background: linear-gradient(135deg, #ffffff, #ff8fab, #ffffff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 2.2rem;
+            margin: 0 0 20px;
+            text-shadow: 0 0 15px rgba(255, 143, 171, 0.4);
+        }
+        #gallery-screen h2 .emoji {
+            -webkit-text-fill-color: initial!important;
+            background: none!important;
+            color: initial!important;
+            text-shadow: none!important;
+        }
+        .gallery-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            max-width: 600px;
             margin: 0 auto 20px;
         }
-        .card { 
-            background: #1a1a1a; 
-            border: 2px solid #ff69b4; 
-            border-radius: 15px; 
-            padding: 10px; 
-            box-shadow: 0 0 15px #ff69b4; 
-            opacity: 0; 
-            transform: scale(0.8); 
-            transition: all 0.6s ease-in-out; 
+        .card {
+            background: #1a1a1a;
+            border: 2px solid transparent;
+            background-image: linear-gradient(#1a1a1a, #1a1a1a), linear-gradient(135deg, #ffffff, #ff69b4, #ffffff);
+            background-origin: border-box;
+            background-clip: padding-box, border-box;
+            border-radius: 15px;
+            padding: 10px;
+            box-shadow: 0 0 25px rgba(255, 105, 180, 0.6);
+            opacity: 0;
+            transform: scale(0.8);
+            transition: all 0.6s ease-in-out;
         }
         .card img { width: 100%; height: 200px; border-radius: 10px; object-fit: cover; }
         .card.show { opacity: 1; transform: scale(1); }
         #nextBtn { display: none; margin: 10px auto 30px; }
 
-        /* Screen 6: Hearts + Message */
         #hearts-bg {
             position: fixed;
             top: 0; left: 0;
@@ -154,8 +184,9 @@
             font-size: 20px;
             color: #ff69b4;
             text-align: left;
-            min-height: 150px;
-            line-height: 1.6;
+            min-height: 50px;
+            line-height: 1.8;
+            white-space: pre-wrap;
         }
         .typing::after {
             content: '|';
@@ -165,8 +196,7 @@
             0%, 50% { opacity: 1; }
             51%, 100% { opacity: 0; }
         }
-        
-        /* NEW EMOJI HEART BUTTON */
+
         #heartBtnContainer {
             display: none;
             margin-top: 30px;
@@ -195,23 +225,58 @@
             margin-top: 10px;
         }
 
-        /* Final Screen */
         #final-screen h1 {
             font-size: 2.5rem;
-            color: #ff69b4;
+            background: linear-gradient(135deg, #ffffff, #ff69b4, #ffffff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 20px rgba(255, 105, 180, 0.6);
             animation: fadeIn 2s ease-in;
+            margin-bottom: 20px;
+        }
+        #timeInfo {
+            font-size: 14px;
+            color: #ff69b4;
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+        #smallText {
+            font-size: 12px;
+            color: #ff69b4;
+            margin-top: 10px;
+            opacity: 0.8;
+        }
+
+        #musicBtn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 100;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            padding: 0;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
     </style>
 </head>
 <body>
 
-    <!-- Screen 1: Welcome -->
+    <audio id="bgMusic" loop>
+        <source src="music.mp3" type="audio/mpeg">
+    </audio>
+
+    <button id="musicBtn" onclick="toggleMusic()">🔊</button>
+
     <div id="welcome" class="screen active">
-        <h1>Welcome ✨</h1>
+        <h1>Welcome <span class="emoji">✨</span></h1>
         <button onclick="showScreen('dial-screen')">Click Here</button>
     </div>
 
-    <!-- Screen 2: Dial Pad -->
     <div id="dial-screen" class="screen">
         <div class="dial-container">
             <h2 style="color: #ff69b4; margin-bottom: 20px;">🔒 Secret Code</h2>
@@ -234,27 +299,22 @@
         </div>
     </div>
 
-    <!-- Screen 3: Loading Memories -->
     <div id="loading-memories" class="screen">
         <div class="loading-text">Loading Memories...</div>
         <div class="loading-bar"><div class="progress"></div></div>
     </div>
 
-    <!-- Screen 4: Gallery -->
     <div id="gallery-screen" class="screen">
-        <h2>Memories</h2>
+        <h2>Most Beautiful Person in the World <span class="emoji">🌎</span><span class="emoji">✨</span></h2>
         <div class="gallery-container" id="gallery-content"></div>
         <button id="nextBtn" onclick="showScreen('loading-message')">Next</button>
     </div>
 
-    <!-- Screen 5: Loading Message -->
     <div id="loading-message" class="screen">
         <div class="loading-text">Loading Message...</div>
         <div class="loading-bar"><div class="progress"></div></div>
     </div>
-
-    <!-- Screen 6: Hearts + Typed Message -->
-    <div id="message-screen" class="screen">
+        <div id="message-screen" class="screen">
         <div id="hearts-bg"></div>
         <div id="messageBox">
             <div id="typedMessage"></div>
@@ -265,15 +325,19 @@
         </div>
     </div>
 
-    <!-- Screen 7: Final -->
     <div id="final-screen" class="screen">
-        <h1>Thanks for giving me your Precious time 💞😊</h1>
+        <h1>Time Spend With You</h1>
+        <div id="timeInfo"></div>
+        <button onclick="restartSite()" style="margin-top: 20px;">Click for Restart</button>
+        <div id="smallText">Just for you 💖</div>
     </div>
 
     <script>
         let currentPin = '';
         const correctCode = '1806';
-        
+        let startTime = new Date();
+        let musicPlaying = false;
+
         const items = [
             { img: "pic3.jpg" },
             { img: "pic2.jpg" },
@@ -285,13 +349,40 @@
             { img: "pic8.jpg" }
         ];
 
-        // ⚡ APNA MESSAGE YAHAN CHANGE KARO ⚡
-        const finalMessage = `You are My Favorite Person ♥️. You are so precious 💎. I love you more than your thoughts.No matter what, you will always be my favorite person 🔒❤️. A thousand times over, you will always hold a special place in my heart 🥺🌹💞`;
+        const finalMessage = `You are My Favorite Person ♥️. I love you more than your thoughts.No matter what, you will always be my favorite person 🔒❤️.
+تیرے خیال سے غافل کبھی نہیں ہونا
+یہ میرا عشق ہے، کوئی کھیل نہیں
+I am deeply in love with a version of you that only exists in my silent prayers. 🛐🕊️🤫❤️ I look at you the way people look at stars—beautiful, but untouchable.✨🌌👁️❤️
+مصور عالم کی بنائی گئی تمام تر تخلیقات میں سے میرے دل نے جس کو محبت کیلئے چنا! وہ فقط " آپ " ہیں۔
+A thousand times over, you will always hold a special place in my heart 🥺🌹 Sometimes I just want to tell you everything, but then I remember you don't care.🥀🖤💬
+حاصلِ کن فکاں ہے قلب میرا
+تم مری جان، اس میں رہتے ہو
+It hurts to know I’m just a minor character in your story. 📖💔👥`;
+
+        function toggleMusic() {
+            const music = document.getElementById('bgMusic');
+            const btn = document.getElementById('musicBtn');
+            if (musicPlaying) {
+                music.pause();
+                btn.innerHTML = '🔇';
+                musicPlaying = false;
+            } else {
+                music.play();
+                btn.innerHTML = '🔊';
+                musicPlaying = true;
+            }
+        }
 
         function showScreen(id) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.getElementById(id).classList.add('active');
-            
+
+            if (id === 'dial-screen' &&!musicPlaying) {
+                document.getElementById('bgMusic').play().catch(e => console.log('Music autoplay blocked'));
+                document.getElementById('musicBtn').innerHTML = '🔊';
+                musicPlaying = true;
+            }
+
             if (id === 'loading-memories') {
                 setTimeout(() => {
                     showScreen('gallery-screen');
@@ -303,6 +394,9 @@
                     showScreen('message-screen');
                     startHeartsAndMessage();
                 }, 2500);
+            }
+            if (id === 'final-screen') {
+                showTimeInfo();
             }
         }
 
@@ -321,6 +415,7 @@
 
         function checkCode() {
             if (currentPin === correctCode) {
+                startTime = new Date();
                 showScreen('loading-memories');
             } else {
                 document.getElementById('error').style.display = 'block';
@@ -328,7 +423,7 @@
             }
         }
 
-        function typeWriter(element, text, speed = 50, callback) {
+        function typeWriter(element, text, speed = 40, callback) {
             let i = 0;
             element.classList.add('typing');
             element.innerHTML = '';
@@ -337,6 +432,8 @@
                 if (i < text.length) {
                     element.innerHTML += text.charAt(i);
                     i++;
+                    // Auto scroll jab text badhe
+                    element.scrollIntoView({ behavior: 'smooth', block: 'end' });
                     setTimeout(typing, speed);
                 } else {
                     element.classList.remove('typing');
@@ -349,29 +446,28 @@
         function buildGallery() {
             let container = document.getElementById('gallery-content');
             container.innerHTML = '';
-            
+
             items.forEach((item, index) => {
                 let cardDiv = document.createElement('div');
                 cardDiv.className = 'card';
                 cardDiv.innerHTML = `<img src="${item.img}" alt="Photo">`;
-                
+
                 container.appendChild(cardDiv);
-                
+
                 setTimeout(() => {
                     cardDiv.classList.add('show');
-                    
-                    // AUTO SCROLL - Har card show hone par neeche scroll ho
+
                     setTimeout(() => {
                         cardDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
                     }, 100);
-                    
+
                     if (index === items.length - 1) {
                         setTimeout(() => {
                             document.getElementById('nextBtn').style.display = 'block';
                             document.getElementById('nextBtn').scrollIntoView({ behavior: 'smooth', block: 'center' });
                         }, 500);
                     }
-                }, index * 800); // Thoda slow kiya taake scroll smooth lage
+                }, index * 800);
             });
         }
 
@@ -382,43 +478,48 @@
             heart.style.left = Math.random() * 100 + '%';
             heart.style.animationDuration = (Math.random() * 3 + 3) + 's';
             heart.style.fontSize = (Math.random() * 15 + 20) + 'px';
-            
+
             const colors = ['#ff1744', '#ff69b4', '#ff4081', '#e91e63', '#ff5252', '#9c27b0', '#673ab7', '#ff00ff', '#00bcd4', '#ffc107'];
             heart.style.color = colors[Math.floor(Math.random() * colors.length)];
-            
+
             document.getElementById('hearts-bg').appendChild(heart);
             setTimeout(() => heart.remove(), 6000);
         }
 
         function startHeartsAndMessage() {
             const heartInterval = setInterval(createHeart, 150);
-            
+
             setTimeout(() => {
-                typeWriter(document.getElementById('typedMessage'), finalMessage, 45, () => {
+                typeWriter(document.getElementById('typedMessage'), finalMessage, 35, () => {
                     document.getElementById('heartBtnContainer').style.display = 'block';
+                    document.getElementById('heartBtnContainer').scrollIntoView({ behavior: 'smooth', block: 'center' });
                 });
             }, 500);
         }
-                </script>
 
-    <!-- Visitor Counter Start -->
-<div style="text-align:center; padding:15px; font-family:sans-serif; font-size:14px; color:#666;">
-   Until now <span id="visit-count">...</span> People have viewed this site
-</div>
+        function showTimeInfo() {
+            let endTime = new Date();
+            let diffMs = endTime - startTime;
+            let diffMins = Math.floor(diffMs / 60000);
+            let diffSecs = Math.floor((diffMs % 60000) / 1000);
 
-<script>
-  const namespace = 'apna-username-apna-repo';  
-  const key = 'visits';
+            let openTime = startTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+            let currentTime = endTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
 
-  fetch(`https://api.countapi.xyz/hit/${namespace}/${key}`)
-    .then(res => res.json())
-    .then(data => {
-      document.getElementById('visit-count').innerText = data.value;
-    })
-    .catch(err => {
-      document.getElementById('visit-count').innerText = '1';
-    });
-</script>
-<!-- Visitor Counter End -->
+            document.getElementById('timeInfo').innerHTML = `
+                You opened this web at ${openTime} ⏰<br>
+                Current time is ${currentTime} 🕐<br>
+                You spent ${diffMins} minutes ${diffSecs} seconds here 💝<br><br>
+                Thanks for giving me your precious time 🥺💖✨
+            `;
+        }
+
+        function restartSite() {
+            currentPin = '';
+            document.getElementById('pinDisplay').value = '';
+            showScreen('welcome');
+        }
+    </script>
+
 </body>
-</html>
+        </html>
