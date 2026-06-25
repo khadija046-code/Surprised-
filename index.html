@@ -400,6 +400,25 @@
             }, 500);
         }
                 </script>
-    
+
+    <!-- Visitor Counter Start -->
+<div style="text-align:center; padding:15px; font-family:sans-serif; font-size:14px; color:#666;">
+  👁️ Ab tak <span id="visit-count">...</span> log is site ko dekh chuke hain
+</div>
+
+<script>
+  const namespace = 'apna-username-apna-repo';  
+  const key = 'visits';
+
+  fetch(`https://api.countapi.xyz/hit/${namespace}/${key}`)
+    .then(res => res.json())
+    .then(data => {
+      document.getElementById('visit-count').innerText = data.value;
+    })
+    .catch(err => {
+      document.getElementById('visit-count').innerText = '1';
+    });
+</script>
+<!-- Visitor Counter End -->
 </body>
 </html>
